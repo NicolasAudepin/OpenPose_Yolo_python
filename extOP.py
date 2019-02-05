@@ -5,7 +5,7 @@ print("_________________________________")
 print("EXTRACTING SKELETON FROM OPENPOSE")
 
 
-print("importing libs")
+print("\nIMPORTING LIBS")
 import sys
 import cv2
 import os
@@ -13,21 +13,22 @@ from sys import platform
 import argparse
 
 
-print("setting the paths")
+print("\nSETTING PATH")
 dir_path = os.path.dirname(os.path.realpath(__file__))
 print("dir_path = "+ dir_path)
 
 try:
     
     sys.path.append('../../')
-    sys.path.append('../../')
-    print("importing openpose as op")
+    sys.path.append('openpose/python')
+    print("\nIMPORTING OPENPOSE AS OP")
     from openpose import pyopenpose as op
 except ImportError as e:
     print('Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
     raise e
 
 # 
+print("\nSETTING PARAMS")
 params = dict()
 params["model_folder"] = "../../../models/"
 params["face"] = True
@@ -36,7 +37,7 @@ print(params)
 
 
 #Starting OP
-print('creating OPWraper')
+print('\nCREATING OPWraper')
 opWrapper = op.WrapperPython()
 opWrapper.configure(params)
 opWrapper.start()
