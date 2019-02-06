@@ -20,9 +20,8 @@ print("dir_path = "+ dir_path)
 try:
     
     sys.path.append('../../')
+    sys.path.append("../../pyhton/openpose")
     sys.path.append('openpose/python')
-
-    print("sys.path = ")
     print(sys.path)
     print("\nIMPORTING OPENPOSE AS OP")
     from openpose import pyopenpose as op
