@@ -1,21 +1,84 @@
-# $  python3 extOP.py --model cmu --video ./passe.mp4 --live True --save_video ./ --save_data ./
+#
+# $ python3 extOP.py --model cmu --video ./passe.mp4 --live False --save_video ./OPvideos/ --save_data ./OPdata/
+#
+
+
 
 print("_________________________________________________")
 print("START")
 
-
-
+print("\nIMPORTING LIBS")
 import argparse
 import logging
 import time
-
 import cv2 as cv
 import numpy as np
-print("\nIMPORTING LIBS")
 import sys
 import os
 import json
 
+
+
+
+print("DEFINING FUNCTIONS")
+
+def ProcessImage(image):
+    print("processing image")
+    #Choosing the algorithm to process with (caffe implementation, tensorflow mobilenet_thin of tensorflow cmu model):
+    if args.model=='mobilenet_thin' or args.model=='cmu' or args.model=='mobilenet_fast' or args.model=='mobilenet_accurate':
+        #Returning a list of the human parts:
+        humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
+        if not args.showBG:
+            image = np.zeros(image.shape)
+        #Drawing the human parts on top of the image:
+        image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
+    
+    elif args.model=='caffe':
+        #Returning the image processed in an array format:
+        try:
+                                                        
+            image_before_rgb=processing(image,param,parametre_search,model,net)           
+            b1,g1,r1 = cv.split(image_before_rgb)
+            image = cv.merge((r1,g1,b1))
+        except: 
+            frame_number+=1
+    print("processing done")
+    #Showing the frames processed:
+    if screen==True:
+        cv.putText(image, "FPS: %f" % (1.0 / (time.time() - fps_time)), (10, 10),  cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        #cv.imshow('computation result', image)
+
+    #Saving the frames in a directory:                                                               
+    if args.save!='':
+        cv.imwrite("%s/%d.jpg" % (args.save,frame_number), image)
+
+    #Saving the video output in a directory:
+    if args.save_video!='':
+        video_output.write(image)
+
+    print("fps : ",(1.0 / (time.time() - fps_time)))
+    print("frame number :",frame_number)        
+    
+    #Saving the data output in a dictionary txt format:
+    if args.save_data:
+        human=humans[0]
+
+        body_position={}
+        body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoulder",6:"lElbow",7:"lWrist",8:"rHip",9:"rKnee",10:"rAnkle",11:"lHip",12:"lKnee",13:"lAnkle"}
+        for bPart in body_parts.keys():
+            if bPart in human.body_parts:
+                x=human.body_parts[bPart].x
+                y=human.body_parts[bPart].y
+                pos=[x,y]
+                body_position[body_parts[bPart]]=pos
+        duration=frame_number/fps        
+        data['positions'][duration]=body_position
+    frame_number +=1
+    print("pic done ")
+
+
+
+print("INITIALISING")
 sys.path.append('tf-openpose')
 sys.path.append('tf-openpose/tf_pose')
 
@@ -29,7 +92,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 if __name__ == '__main__':
-    print("ARGUMENTS PARSER ")
+    print("MAIN START")
     #All the args argument:
     parser = argparse.ArgumentParser(description='tf-pose-estimation Video')
     parser.add_argument('--video', type=str, default='')
@@ -127,60 +190,14 @@ if __name__ == '__main__':
         print("Error opening video stream or file")
 
     try:
+        print("START LOOP")
         while cap.isOpened():    
             #Capturing the frame:       
             ret_val, image = cap.read()
             #Frame to process:
             if count%ratio==0:
-                #Choosing the algorithm to process with (caffe implementation, tensorflow mobilenet_thin of tensorflow cmu model):
-                if args.model=='mobilenet_thin' or args.model=='cmu' or args.model=='mobilenet_fast' or args.model=='mobilenet_accurate':
-                    #Returning a list of the human parts:
-                    humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
-                    if not args.showBG:
-                        image = np.zeros(image.shape)
-                    #Drawing the human parts on top of the image:
-                    image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
-                
-                elif args.model=='caffe':
-                    #Returning the image processed in an array format:
-                    try:
-                                                                  
-                        image_before_rgb=processing(image,param,parametre_search,model,net)           
-                        b1,g1,r1 = cv.split(image_before_rgb)
-                        image = cv.merge((r1,g1,b1))
-                    except: 
-                        frame_number+=1
-                #Showing the frames processed:
-                if screen==True:
-                    cv.putText(image, "FPS: %f" % (1.0 / (time.time() - fps_time)), (10, 10),  cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                    #cv.imshow('computation result', image)
-
-                #Saving the frames in a directory:                                                               
-                if args.save!='':
-                    cv.imwrite("%s/%d.jpg" % (args.save,frame_number), image)
-
-                #Saving the video output in a directory:
-                if args.save_video!='':
-                    video_output.write(image)
-
-                print("fps : ",(1.0 / (time.time() - fps_time)))
-                print("frame number :",frame_number)        
-                
-                #Saving the data output in a dictionary txt format:
-                if args.save_data:
-                    human=humans[0] #save only one skeleton at a time
-
-                    body_position={}
-                    body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoulder",6:"lElbow",7:"lWrist",8:"rHip",9:"rKnee",10:"rAnkle",11:"lHip",12:"lKnee",13:"lAnkle"}
-                    for bPart in body_parts.keys():
-                        if bPart in human.body_parts:
-                            x=human.body_parts[bPart].x
-                            y=human.body_parts[bPart].y
-                            pos=[x,y]
-                            body_position[body_parts[bPart]]=pos
-                    duration=frame_number/fps        
-                    data['positions'][duration]=body_position
-                frame_number +=1
+                ProcessImage(image)
+            print("one image processed")    
             fps_time = time.time()
 
             #End of the video:
@@ -193,6 +210,7 @@ if __name__ == '__main__':
                 break
 
         #Releasing everything:
+        print("END WHILE")
         if args.save_video!='':
             video_output.release()
         cap.release()
