@@ -1,5 +1,9 @@
+# $  python3 extOP.py --model cmu --video ./passe.mp4 --live True --save_video ./ --save_data ./
+
 print("_________________________________________________")
 print("START")
+
+
 
 import argparse
 import logging
@@ -77,6 +81,7 @@ if __name__ == '__main__':
     length = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
     
     #Check for the right model, change to its directory and import the required files:
+    print("CHOOSING THE  MODEL")
     if args.model=='mobilenet_thin' or args.model=='cmu' or args.model=='mobilenet_fast' or args.model=='mobilenet_accurate':
         sys.path.insert(0, '../tf-openpose')
         from tf_pose.estimator import TfPoseEstimator
@@ -114,6 +119,10 @@ if __name__ == '__main__':
     else:
         ratio=int(length/nb_images)
 
+
+
+
+    print("PROCESSING START")
     if cap.isOpened() is False:
         print("Error opening video stream or file")
 
@@ -159,7 +168,7 @@ if __name__ == '__main__':
                 
                 #Saving the data output in a dictionary txt format:
                 if args.save_data:
-                    human=humans[0]
+                    human=humans[0] #save only one skeleton at a time
 
                     body_position={}
                     body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoulder",6:"lElbow",7:"lWrist",8:"rHip",9:"rKnee",10:"rAnkle",11:"lHip",12:"lKnee",13:"lAnkle"}
