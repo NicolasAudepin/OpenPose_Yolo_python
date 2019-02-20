@@ -55,17 +55,17 @@ cv.imwrite("result.jpg",image)
 data={'positions':{}}
 human=humans[0]
 
-    body_position={}
-    body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoulder",6:"lElbow",7:"lWrist",8:"rHip",9:"rKnee",10:"rAnkle",11:"lHip",12:"lKnee",13:"lAnkle"}
-    for bPart in body_parts.keys():
-        if bPart in human.body_parts:
-            x=human.body_parts[bPart].x
-            y=human.body_parts[bPart].y
-            pos=[x,y]
-            body_position[body_parts[bPart]]=pos
-    data['positions'][duration]=body_position
-     with open("%s/dataOP/skeleton.txt"%args.save_data, 'w') as outfile:
-        json.dump(data, outfile, sort_keys = True, indent = 4,ensure_ascii = False)
+body_position={}
+body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoulder",6:"lElbow",7:"lWrist",8:"rHip",9:"rKnee",10:"rAnkle",11:"lHip",12:"lKnee",13:"lAnkle"}
+for bPart in body_parts.keys():
+    if bPart in human.body_parts:
+        x=human.body_parts[bPart].x
+        y=human.body_parts[bPart].y
+        pos=[x,y]
+        body_position[body_parts[bPart]]=pos
+data['positions'][0]=body_position
+with open("./OPdata/skeleton.txt", 'w') as outfile:
+    json.dump(data, outfile, sort_keys = True, indent = 4,ensure_ascii = False)
 
 
 print("\nTHE END")
