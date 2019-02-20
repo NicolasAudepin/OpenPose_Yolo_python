@@ -1,4 +1,3 @@
-#heavily inspired by https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/examples/tutorial_api_python/2_whole_body_from_image.py
 
 #pic 1920 * 1080
 
@@ -25,7 +24,7 @@ w=5472
 h=3648
 resize_out_ratio = 4.0
 
-print("INITIALISING?")
+print("SETTING LOGS")
 start=time.time()
 logger = logging.getLogger('TfPoseEstimator-Video')
 logger.setLevel(logging.DEBUG)
@@ -48,12 +47,26 @@ e = TfPoseEstimator(get_graph_path('cmu'), target_size=(432, 368))
 print('THE ACTUAL PROCESSING HAPPEN HERE')
 
 humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=resize_out_ratio)
-data={'positions':{}}
 image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
 
 print("SAVING THE STUFF")
 
 cv.imwrite("result.jpg",image)
+data={'positions':{}}
+human=humans[0]
+
+    body_position={}
+    body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoulder",6:"lElbow",7:"lWrist",8:"rHip",9:"rKnee",10:"rAnkle",11:"lHip",12:"lKnee",13:"lAnkle"}
+    for bPart in body_parts.keys():
+        if bPart in human.body_parts:
+            x=human.body_parts[bPart].x
+            y=human.body_parts[bPart].y
+            pos=[x,y]
+            body_position[body_parts[bPart]]=pos
+    data['positions'][duration]=body_position
+     with open("%s/dataOP/skeleton.txt"%args.save_data, 'w') as outfile:
+        json.dump(data, outfile, sort_keys = True, indent = 4,ensure_ascii = False)
+
 
 print("\nTHE END")
 print("_________________________________\n")
