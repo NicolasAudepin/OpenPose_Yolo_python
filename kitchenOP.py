@@ -15,13 +15,21 @@ import sys
 import os
 import json
 
+print("DEFINING FUNCTIONS")
+def ProssessOnePic(image):
+    
+    humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=resize_out_ratio)
+    image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
+
+
+
 print("SETTING PATH")
 sys.path.append('tf-openpose')
 sys.path.append('tf-openpose/tf_pose')
 
 print("SETTING CONSTS")
-w=5472
-h=3648
+w=1920
+h=1080
 resize_out_ratio = 4.0
 
 print("SETTING LOGS")
@@ -33,9 +41,6 @@ ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
-
-print("CHOOSING THE PIC")
-image = cv.imread("test.jpg")
 
 print("SETTING THE NEURAL NETWORK")
 sys.path.insert(0, '../tf-openpose')
@@ -52,39 +57,38 @@ body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoul
 print('THE ACTUAL PROCESSING HAPPEN HERE')
 
 dataDir = os.fsencode("../DATA/Cornell/kitchen/data_01-12-07/rgbjpg")
+n = 0
+for fileNamebytes in sorted(os.listdir(dataDir)):
+    n = n + 1
+    print(fileNamebytes)
+    fileName = fileNamebytes.strip().decode('utf-8')
 
-for fileName in os.listdir(dataDir):
-    image = cv.imread(fileName)
-    ProssessOnePic(image)
+    image = cv.imread("../DATA/Cornell/kitchen/data_01-12-07/rgbjpg/"+fileName)
+    #ProssessOnePic(image)
+    humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=resize_out_ratio)
+    image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
     
-    
-    cv.imwrite("res"+fileName,image)
+    cv.imwrite("./OPvideos/res"+fileName,image)
 
+    # saving the skeleton in the data if there is one
+    try:
+        human=humans[0]
+        body_position={}
+        for bPart in body_parts.keys():
+            if bPart in human.body_parts:
+                x=human.body_parts[bPart].x
+                y=human.body_parts[bPart].y
+                pos=[x,y]
+                body_position[body_parts[bPart]]=pos
+        data['positions'][n]=body_position
+    except:
+        print("No Skeleton on this pic?")
 
-print("SAVING THE STUFF")
-
-human=humans[0]
-
-
-body_position={}
-
-for bPart in body_parts.keys():
-    if bPart in human.body_parts:
-        x=human.body_parts[bPart].x
-        y=human.body_parts[bPart].y
-        pos=[x,y]
-        body_position[body_parts[bPart]]=pos
-data['positions'][0]=body_position
-print("SAVING THE SKELETONS")
+print("SAVING THE SKELETONS FILE")
 with open("./OPdata/skeleton.txt", 'w') as outfile:
     json.dump(data, outfile, sort_keys = True, indent = 4,ensure_ascii = False)
 
 
 print("\nTHE END")
 print("__________________________________________________")
-
-def ProssessOnePic(image):
-    
-    humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=resize_out_ratio)
-    image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
 
