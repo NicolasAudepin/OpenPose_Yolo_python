@@ -28,10 +28,11 @@ sys.path.append('tf-openpose')
 sys.path.append('tf-openpose/tf_pose')
 
 print("SETTING CONSTS")
-w=1920
+w=1920 #taille des images de la BDD
 h=1080
 resize_out_ratio = 4.0
 
+"""
 print("SETTING LOGS")
 start=time.time()
 logger = logging.getLogger('TfPoseEstimator-Video')
@@ -41,12 +42,12 @@ ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
+"""
 
 print("SETTING THE NEURAL NETWORK")
 sys.path.insert(0, '../tf-openpose')
 from tf_pose.estimator import TfPoseEstimator
 from tf_pose.networks import get_graph_path, model_wh
-#logger.debug('initialization %s : %s' % (args.model, get_graph_path(args.model)))
 e = TfPoseEstimator(get_graph_path('cmu'), target_size=(432, 368))
 
 print("INITIALIZING THE OUTPUTS")
