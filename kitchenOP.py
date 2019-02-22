@@ -57,7 +57,7 @@ body_parts={0:"Head",1:"mShoulder",2:"rShoulder",3:"rElbow",4:"rWrist",5:"lShoul
 
 print('THE ACTUAL PROCESSING HAPPEN HERE')
 
-dataDir = os.fsencode("../DATA/Cornell/kitchen/data_01-12-07/rgbjpg")
+dataDir = os.fsencode("../DATA/Cornell/kitchen/data_01-11-11/rgbjpg")
 n = 0
 for fileNamebytes in sorted(os.listdir(dataDir)):
     n = n + 1
