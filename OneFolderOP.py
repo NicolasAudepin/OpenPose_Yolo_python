@@ -115,7 +115,8 @@ for folderNamebytes in sorted(os.listdir(kitchenDir)):
         with open("./OPdata/"+folderNamebytes.strip().decode('utf-8')+".txt", 'w') as outfile:
             json.dump(data, outfile, sort_keys = True, indent = 4,ensure_ascii = False)
     else:
-        print("next folder ")
+        print(" ")
+    print("__________ ")
 
 print("\nTHE END")
 print("__________________________________________________")
