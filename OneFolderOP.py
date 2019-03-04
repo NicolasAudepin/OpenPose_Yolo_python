@@ -55,9 +55,14 @@ print("FOLDERS ")
 kitchenDir = os.fsencode("../DATA/Cornell/kitchen")
 for folderNamebytes in sorted(os.listdir(kitchenDir)):
 
-
-
     print(folderNamebytes.strip().decode('utf-8'))
+    
+    print("is it already processed?")
+
+    dataDir = os.fsencode("./OPdata")
+    for DataNamebytes in sorted(os.listdir(dataDir)):
+        print(DataNamebytes.strip().decode('utf-8') )
+
 
     print("INITIALIZING THE OUTPUTS")
     data={'positions':{}}
