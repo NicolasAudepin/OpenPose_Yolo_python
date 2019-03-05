@@ -96,20 +96,24 @@ for folderNamebytes in sorted(os.listdir(kitchenDir)):
                 #cv.imwrite("./OPvideos/res"+fileName,image)
 
                 # saving the skeleton in the data if there is one
+                body_position={}
                 try:
                     human=humans[0]
-                    body_position={}
+                    
                     for bPart in body_parts.keys():
                         if bPart in human.body_parts:
                             x=human.body_parts[bPart].x
                             y=human.body_parts[bPart].y
                             pos=[x,y]
                             body_position[body_parts[bPart]]=pos
-                    data['positions'][n]=body_position
+                    
                 except:
                     print("No Skeleton on this pic?")
+                data['positions'][n]=body_position 
             except:
-                print("issues with the pic ?")
+                print("issues with the pic ? go see the error.txt file")
+                with open("./errors.txt","a") as errorfile:
+                    errorfile.write(folderNamebytes.strip().decode('utf-8')+" : "+fileNamebytes.strip().decode('utf-8')+"\n")
 
         print("SAVING THE SKELETONS FILE")
         with open("./OPdata/"+folderNamebytes.strip().decode('utf-8')+".txt", 'w') as outfile:
