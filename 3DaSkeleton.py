@@ -20,7 +20,7 @@ def ZfromMat(x,y,mat):
     xlen=len(mat)
     ylen=len(mat[0])
     xmat = int(round(x*xlen))-50
-    ymat = int(round(y*ylen))-100
+    ymat = int(round(y*ylen*1.2))-190
 
     #print(xmat)
     #print(ymat)
@@ -114,6 +114,11 @@ while(running):
     im = cv.imread('./data_02-10-35/rgbjpg/'+ nbtxt +'.jpg')
 
     plt.imshow(im)
+
+    ax = fig.add_subplot(224, projection='3d')
+    ax.set_xlim(0,1)
+    ax.set_zlim(1,0)
+    ax.scatter(X,Z,Y)
     
     
     plt.show()
