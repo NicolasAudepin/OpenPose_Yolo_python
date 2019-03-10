@@ -20,7 +20,7 @@ def ZfromMat(x,y,mat):
     xlen=len(mat)
     ylen=len(mat[0])
     xmat = int(round(x*xlen))-50
-    ymat = int(round(y*ylen*1.2))-190
+    ymat = int(round(y*ylen*1.25))-190
 
     #print(xmat)
     #print(ymat)
@@ -41,8 +41,9 @@ skeletons = skelData[u'positions']
 running = True
 nb = "0"
 while(running):
-    keyboard = str(input("next one ?"))
-    if (len(keyboard)==0):
+    inputTxt=input("next one ?")
+    keyboard = str(inputTxt)
+    if (keyboard==""):
         print("next")
         nb = str(int(nb)+1)
     if(keyboard=="x"):
@@ -57,13 +58,12 @@ while(running):
     while (len(nbtxt)<4):
         nbtxt="0"+nbtxt
 
+    #exctract the key point list from the skeleton
     skeletonDict= skeletons[str(nb)]
-    
     skeleton=[]
     for keyleton, boneDict in skeletonDict.iteritems():
         bone=[keyleton,boneDict]
         skeleton.append(bone)
-
     X=[]
     Y=[]
     Z=[]
@@ -76,6 +76,7 @@ while(running):
     depthData = scipy.io.loadmat("./data_02-10-35/depth/"+ nbtxt +".mat")
     depthMat = depthData["depth"]
     
+    #draw the skeleton over the depth picture
     for bone in skeleton:
         z,xmat,ymat=ZfromMat(bone[1][1],bone[1][0],depthMat)
         Z.append(z)
