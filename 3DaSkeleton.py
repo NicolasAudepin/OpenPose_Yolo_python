@@ -61,7 +61,7 @@ while(running):
     #exctract the key point list from the skeleton
     skeletonDict= skeletons[str(nb)]
     skeleton=[]
-    for keyleton, boneDict in skeletonDict.iteritems():
+    for keyleton, boneDict in skeletonDict.items():
         bone=[keyleton,boneDict]
         skeleton.append(bone)
     X=[]
