@@ -20,7 +20,7 @@ def ZfromMat(x,y,mat):
     xlen=len(mat)
     ylen=len(mat[0])
     xmat = int(round(x*xlen))-50
-    ymat = int(round(y*ylen*1.25))-190
+    ymat = int(round(y*ylen*1.70))-340
 
     #print(xmat)
     #print(ymat)
@@ -99,7 +99,9 @@ while(running):
 
     plt.subplot(2,2,1)
     plt.imshow(depthMat)
-    #plt.gray()
+    plt.title("Image de profondeur "+nbtxt)
+    
+    plt.gray()
     #plt.show()
 
     plt.subplot(2,2,2)
@@ -107,19 +109,24 @@ while(running):
     plt.xlim([0,1])
     plt.ylim([1,0])
     plt.plot(X,Y,"o")
-    plt.title(nbtxt)
+    txt= "squelette "+nbtxt
+    plt.title(txt)
     
     plt.subplot(2,2,3)
 
     #im  = scipy.io.loadim("./data_02-10-35/rgbjpg/"+ nbtxt +".jpg")
     im = cv.imread('./data_02-10-35/rgbjpg/'+ nbtxt +'.jpg')
-
+    plt.title("Image source "+nbtxt)
+    
     plt.imshow(im)
 
     ax = fig.add_subplot(224, projection='3d')
     ax.set_xlim(0,1)
     ax.set_zlim(1,0)
     ax.scatter(X,Z,Y)
+    txt = 'hestimation du squelette en 3D'+nbtxt
+    
+    
     
     
     plt.show()

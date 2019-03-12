@@ -104,7 +104,8 @@ for folderNamebytes in sorted(os.listdir(kitchenDir)):
                         if bPart in human.body_parts:
                             x=human.body_parts[bPart].x
                             y=human.body_parts[bPart].y
-                            pos=[x,y]
+                            score = human.body_parts[bPart].score
+                            pos=[x,y,score]
                             body_position[body_parts[bPart]]=pos
                     
                 except:
