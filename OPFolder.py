@@ -2,7 +2,8 @@
 #pic 1920 * 1080
 
 print("__________________________________________________")
-print("EXTRACTING SKELETON FROM THE KITCHEN WITH OPENPOSE")
+print("EXTRACTING SKELETON FROM THE DIRECTORY WITH OPENPOSE")
+
 
 
 print("\nIMPORTING LIBS")
@@ -15,13 +16,11 @@ import sys
 import os
 import json
 
-print("DEFINING FUNCTIONS")
-def ProssessOnePic(image):
-    
-    humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=resize_out_ratio)
-    image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
 
-
+print("SETTING FOLDERS ")
+savingFolder = "./OPskeleton/" #where it will be saved
+dataFolder = "../DATA/Cornell/kitchen"  #this is the folder in wich all the pictures folders are
+kitchenDir = os.fsencode(dataFolder)
 
 print("SETTING PATH")
 sys.path.append('tf-openpose')
@@ -31,6 +30,17 @@ print("SETTING CONSTS")
 w=1920 #taille des images de la BDD
 h=1080
 resize_out_ratio = 4.0
+
+
+
+print("DEFINING FUNCTIONS")
+def ProssessOnePic(image):
+    
+    humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=resize_out_ratio)
+    image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
+
+
+
 
 """
 print("SETTING LOGS")
@@ -52,11 +62,7 @@ from tf_pose.networks import get_graph_path, model_wh
 e = TfPoseEstimator(get_graph_path('cmu'), target_size=(432, 368))
 
 
-#this is the folder in wich all the pictures folders are
-print("FOLDERS ")
-savingFolder = "./OPskeleton/"
-kitchenDir = os.fsencode("../DATA/Cornell/kitchen")
-
+print("STARTING THE PROCESS")
 #we try to process the pictures of each data folder
 for folderNamebytes in sorted(os.listdir(kitchenDir)):
     print(folderNamebytes.strip().decode('utf-8'))
@@ -108,7 +114,6 @@ for folderNamebytes in sorted(os.listdir(kitchenDir)):
                             score = human.body_parts[bPart].score #the confidence score of the joint
                             pos=[x,y,score]
                             body_position[body_parts[bPart]]=pos
-                    
                 except:
                     print("No Skeleton on this pic?")
                 data['positions'][n]=body_position 
