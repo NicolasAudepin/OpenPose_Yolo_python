@@ -18,7 +18,7 @@ import json
 
 
 print("SETTING FOLDERS ")
-savingFolder = "./OPskeleton/" #where it will be saved
+savingFolder = "./OPdata/" #where it will be saved
 dataFolder = "../DATA/Cornell/kitchen"  #this is the folder in wich all the pictures folders are
 kitchenDir = os.fsencode(dataFolder)
 
@@ -39,20 +39,6 @@ def ProssessOnePic(image):
     humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=resize_out_ratio)
     image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
 
-
-
-
-"""
-print("SETTING LOGS")
-start=time.time()
-logger = logging.getLogger('TfPoseEstimator-Video')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-"""
 
 
 print("SETTING THE NEURAL NETWORK")
@@ -104,7 +90,8 @@ for folderNamebytes in sorted(os.listdir(kitchenDir)):
 
                 # saving the skeleton in the data if there is one
                 body_position={}
-                try:
+                
+                if len(humans>0):
                     human=humans[0]
                     
                     for bPart in body_parts.keys():
@@ -114,17 +101,18 @@ for folderNamebytes in sorted(os.listdir(kitchenDir)):
                             score = human.body_parts[bPart].score #the confidence score of the joint
                             pos=[x,y,score]
                             body_position[body_parts[bPart]]=pos
-                except:
-                    print("No Skeleton on this pic?")
+                else:
+                    body_position["nobody"] = [0,0,0]
+            
                 data['positions'][n]=body_position 
             except:
                 print("issues with the pic ? go see the error.txt file")
-                with open("./errors2.txt","a") as errorfile:
+                with open("./errors3.txt","a") as errorfile:
                     errorfile.write(folderNamebytes.strip().decode('utf-8')+" : "+fileNamebytes.strip().decode('utf-8')+"\n")
 
-        print("SAVING THE SKELETONS FILE")
-        with open(savingFolder+folderNamebytes.strip().decode('utf-8')+".txt", 'w') as outfile:
-            json.dump(data, outfile, sort_keys = True, indent = 4,ensure_ascii = False)
+        #print("SAVING THE SKELETONS FILE")
+        #with open(savingFolder+folderNamebytes.strip().decode('utf-8')+".txt", 'w') as outfile:
+        #    json.dump(data, outfile, sort_keys = True, indent = 4,ensure_ascii = False)
     else:
         print(" ")
     print("__________ ")
